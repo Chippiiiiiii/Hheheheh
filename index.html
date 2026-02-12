@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Team Auction</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<h2>Team Auction Panel</h2>
+
+<input id="teamId" placeholder="Enter Team Name">
+<button onclick="join()">Join</button>
+
+<h3 id="basePrice"></h3>
+<h3 id="timer"></h3>
+
+<p>Your Bid: ₹<span id="myBid">0</span></p>
+
+<input type="number" id="bidInput">
+<button onclick="placeBid()">Increase Bid</button>
+
+<h2 id="result"></h2>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    let teamId = null;
+    let endTime = null;
+
+    function join() {
+      teamId = document.getElementById("teamId").value;
+      socket.emit("joinTeam", teamId);
+    }
+
+    function placeBid() {
+      const amount = parseInt(document.getElementById("bidInput").value);
+      socket.emit("placeBid", { teamId, amount });
+    }
+
+    socket.on("auctionStarted", (data) => {
+      document.getElementById("basePrice").innerText =
+        "Base Price: ₹" + data.basePrice;
+
+      document.getElementById("result").innerText = "";
+      endTime = data.endTime;
+    });
+
+    socket.on("updateBid", (amount) => {
+      document.getElementById("myBid").innerText = amount;
+    });
+
+    socket.on("auctionEnded", ({ winner, highest }) => {
+      document.getElementById("result").innerText =
+        "Auction Ended! Highest Bid: ₹" + highest + " | Winner: " + winner;
+    });
+
+    setInterval(() => {
+      if (endTime) {
+        const remaining = Math.max(0,
+          Math.floor((endTime - Date.now()) / 1000));
+        document.getElementById("timer").innerText =
+          "Time Left: " + remaining + "s";
+      }
+    }, 1000);
+
+</script>
+
+</body>
+</html>
