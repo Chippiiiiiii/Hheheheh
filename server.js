@@ -1,20 +1,24 @@
 const express = require("express");
 const app = express();
-const path = require("path");
 
 app.use(express.json());
 app.use(express.static("public"));
 
 const PORT = process.env.PORT || 3000;
 
-// GLOBAL AUCTION DATA
 let auction = {
     basePrice: 1000,
     minIncrement: 100,
     highestBid: 0,
     highestTeam: "",
     teams: {},
-    initialCapital: 10000
+    initialCapital: 10000,
+    roundTime: 60,
+    timeLeft: 60,
+    timerRunning: false,
+    roundEnded: false,
+    lastWinner: "",
+    lastWinningBid: 0
 };
 
 // REGISTER TEAM
@@ -31,25 +35,63 @@ app.post("/register", (req, res) => {
     res.json({ success: true });
 });
 
+// ADMIN SETTINGS
+app.post("/settings", (req, res) => {
+    const { basePrice, capital, roundTime } = req.body;
+
+    auction.basePrice = basePrice;
+    auction.initialCapital = capital;
+    auction.roundTime = roundTime;
+    auction.timeLeft = roundTime;
+
+    res.json({ success: true });
+});
+
+// START ROUND
+app.post("/start", (req, res) => {
+
+    auction.roundEnded = false;
+    auction.lastWinner = "";
+    auction.lastWinningBid = 0;
+    auction.highestBid = 0;
+    auction.highestTeam = "";
+
+    if (!auction.timerRunning) {
+        auction.timerRunning = true;
+        auction.timeLeft = auction.roundTime;
+
+        const interval = setInterval(() => {
+            auction.timeLeft--;
+
+            if (auction.timeLeft <= 0) {
+                clearInterval(interval);
+                auction.timerRunning = false;
+                endRound();
+            }
+        }, 1000);
+    }
+
+    res.json({ success: true });
+});
+
 // PLACE BID
 app.post("/bid", (req, res) => {
     const { teamName, amount } = req.body;
 
-    if (!auction.teams[teamName]) {
+    if (!auction.timerRunning)
+        return res.json({ error: "Round not active" });
+
+    if (!auction.teams[teamName])
         return res.json({ error: "Team not registered" });
-    }
 
-    if (amount < auction.basePrice) {
+    if (amount < auction.basePrice)
         return res.json({ error: "Below base price" });
-    }
 
-    if (amount < auction.highestBid + auction.minIncrement) {
+    if (amount < auction.highestBid + auction.minIncrement)
         return res.json({ error: "Bid too low" });
-    }
 
-    if (amount > auction.teams[teamName].capital) {
+    if (amount > auction.teams[teamName].capital)
         return res.json({ error: "Not enough capital" });
-    }
 
     auction.highestBid = amount;
     auction.highestTeam = teamName;
@@ -58,13 +100,13 @@ app.post("/bid", (req, res) => {
     res.json({ success: true });
 });
 
-// GET DATA
-app.get("/data", (req, res) => {
-    res.json(auction);
-});
+// END ROUND FUNCTION
+function endRound() {
 
-// END AUCTION
-app.post("/end", (req, res) => {
+    auction.roundEnded = true;
+    auction.lastWinner = auction.highestTeam;
+    auction.lastWinningBid = auction.highestBid;
+
     if (auction.highestTeam) {
         auction.teams[auction.highestTeam].capital -= auction.highestBid;
         auction.teams[auction.highestTeam].bid = 0;
@@ -72,8 +114,17 @@ app.post("/end", (req, res) => {
 
     auction.highestBid = 0;
     auction.highestTeam = "";
+}
 
+// MANUAL END
+app.post("/end", (req, res) => {
+    endRound();
     res.json({ success: true });
 });
 
-app.listen(PORT, () => console.log("Server running on port " + PORT));
+// GET DATA
+app.get("/data", (req, res) => {
+    res.json(auction);
+});
+
+app.listen(PORT, () => console.log("Server running"));
