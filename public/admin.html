@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin Panel</title>
+    <title>Admin Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -9,7 +9,8 @@
     <h1>Admin Dashboard</h1>
 
     <div class="card">
-        <h2 id="timer"></h2>
+        <h2 id="highestTeam"></h2>
+        <h3 id="timer"></h3>
 
         <input type="number" id="basePrice" placeholder="Base Price">
         <input type="number" id="capital" placeholder="Initial Capital">
@@ -20,7 +21,17 @@
         <button onclick="endRound()">End Round</button>
     </div>
 
-    <div id="teamsAdmin"></div>
+    <table id="adminTable">
+        <thead>
+        <tr>
+            <th>Team No</th>
+            <th>Team Name</th>
+            <th>Current Bid</th>
+            <th>Highest Bid</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 </div>
 
 <script src="script.js"></script>

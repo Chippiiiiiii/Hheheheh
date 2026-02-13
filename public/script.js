@@ -1,11 +1,6 @@
-// ================= REGISTER TEAM =================
 async function register() {
     const teamName = document.getElementById("teamName").value.trim();
-
-    if (!teamName) {
-        alert("Enter team name");
-        return;
-    }
+    if (!teamName) return alert("Enter team name");
 
     await fetch("/register", {
         method: "POST",
@@ -13,18 +8,12 @@ async function register() {
         body: JSON.stringify({ teamName })
     });
 
-    alert("Registered Successfully!");
+    alert("Registered");
 }
 
-// ================= PLACE BID =================
 async function bid() {
     const teamName = document.getElementById("teamName").value.trim();
     const amount = parseInt(document.getElementById("bidAmount").value);
-
-    if (!teamName || !amount) {
-        alert("Enter valid details");
-        return;
-    }
 
     const res = await fetch("/bid", {
         method: "POST",
@@ -33,13 +22,9 @@ async function bid() {
     });
 
     const data = await res.json();
-
-    if (data.error) {
-        alert(data.error);
-    }
+    if (data.error) alert(data.error);
 }
 
-// ================= ADMIN SETTINGS =================
 async function saveSettings() {
     const basePrice = parseInt(document.getElementById("basePrice").value);
     const capital = parseInt(document.getElementById("capital").value);
@@ -54,66 +39,66 @@ async function saveSettings() {
     alert("Settings Saved");
 }
 
-// ================= START ROUND =================
 async function startRound() {
     await fetch("/start", { method: "POST" });
 }
 
-// ================= END ROUND =================
 async function endRound() {
     await fetch("/end", { method: "POST" });
 }
 
-// ================= LOAD DATA (AUTO REFRESH) =================
 async function loadData() {
     const res = await fetch("/data");
     const data = await res.json();
 
-    // ================= ADMIN PAGE =================
-    if (document.getElementById("teamsAdmin")) {
+    // ADMIN PAGE
+    if (document.getElementById("adminTable")) {
+
+        document.getElementById("highestTeam").innerText =
+            "Highest Bidder: " + (data.highestTeam || "None");
 
         document.getElementById("timer").innerText =
             "Time Left: " + data.timeLeft + "s";
 
-        let html = "";
+        const tbody = document.querySelector("#adminTable tbody");
+        tbody.innerHTML = "";
+
+        let teamNo = 1;
 
         for (let team in data.teams) {
-            html += `
-                <div class="team-box">
-                    <h3>${team}</h3>
-                    <p>Capital: ₹${data.teams[team].capital}</p>
-                    <p>Current Bid: ₹${data.teams[team].bid}</p>
-                </div>
-            `;
-        }
+            const isHighest = team === data.highestTeam ? "Yes" : "No";
 
-        document.getElementById("teamsAdmin").innerHTML =
-            `<div class="row-container">${html}</div>`;
+            tbody.innerHTML += `
+                <tr>
+                    <td>${teamNo}</td>
+                    <td>${team}</td>
+                    <td>₹${data.teams[team].bid}</td>
+                    <td>${isHighest}</td>
+                </tr>
+            `;
+
+            teamNo++;
+        }
     }
 
-    // ================= TEAM PAGE =================
+    // TEAM PAGE
     if (document.getElementById("teamsRow")) {
 
         const teamName = document.getElementById("teamName").value.trim();
 
         if (data.teams[teamName]) {
-
             document.getElementById("teamsRow").innerHTML = `
-                <div class="row-container">
-                    <div class="team-box">
-                        <h2>${teamName}</h2>
-                        <p>Capital: ₹${data.teams[teamName].capital}</p>
-                        <p>Your Current Bid: ₹${data.teams[teamName].bid}</p>
-                    </div>
+                <div class="team-box">
+                    <h2>${teamName}</h2>
+                    <p>Capital: ₹${data.teams[teamName].capital}</p>
+                    <p>Your Current Bid: ₹${data.teams[teamName].bid}</p>
                 </div>
             `;
         }
 
-        // Show result only AFTER round ends
         if (data.roundEnded) {
             document.getElementById("resultBox").innerHTML = `
                 <h2>Winner: ${data.lastWinner || "No Winner"}</h2>
-                <h3>Winning Bid: ₹${data.lastWinningBid}</h3>
             `;
         } else {
             document.getElementById("resultBox").innerHTML = "";
@@ -121,5 +106,4 @@ async function loadData() {
     }
 }
 
-// Auto refresh every second
 setInterval(loadData, 1000);

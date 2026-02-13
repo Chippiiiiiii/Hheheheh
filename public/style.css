@@ -35,16 +35,26 @@ button:hover {
     background: #00e676;
 }
 
-.row-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
 .team-box {
     background: #222;
     padding: 15px;
-    margin: 10px;
+    margin: 10px auto;
     border-radius: 8px;
-    width: 200px;
+    width: 250px;
+}
+
+table {
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background: #1f1f1f;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid #333;
+}
+
+th {
+    background: #00c853;
 }
