@@ -1,5 +1,11 @@
+// ================= REGISTER TEAM =================
 async function register() {
-    const teamName = document.getElementById("teamName").value;
+    const teamName = document.getElementById("teamName").value.trim();
+
+    if (!teamName) {
+        alert("Enter team name");
+        return;
+    }
 
     await fetch("/register", {
         method: "POST",
@@ -7,12 +13,18 @@ async function register() {
         body: JSON.stringify({ teamName })
     });
 
-    alert("Registered!");
+    alert("Registered Successfully!");
 }
 
+// ================= PLACE BID =================
 async function bid() {
-    const teamName = document.getElementById("teamName").value;
+    const teamName = document.getElementById("teamName").value.trim();
     const amount = parseInt(document.getElementById("bidAmount").value);
+
+    if (!teamName || !amount) {
+        alert("Enter valid details");
+        return;
+    }
 
     const res = await fetch("/bid", {
         method: "POST",
@@ -21,9 +33,13 @@ async function bid() {
     });
 
     const data = await res.json();
-    if (data.error) alert(data.error);
+
+    if (data.error) {
+        alert(data.error);
+    }
 }
 
+// ================= ADMIN SETTINGS =================
 async function saveSettings() {
     const basePrice = parseInt(document.getElementById("basePrice").value);
     const capital = parseInt(document.getElementById("capital").value);
@@ -38,24 +54,29 @@ async function saveSettings() {
     alert("Settings Saved");
 }
 
+// ================= START ROUND =================
 async function startRound() {
     await fetch("/start", { method: "POST" });
 }
 
+// ================= END ROUND =================
 async function endRound() {
     await fetch("/end", { method: "POST" });
 }
 
+// ================= LOAD DATA (AUTO REFRESH) =================
 async function loadData() {
     const res = await fetch("/data");
     const data = await res.json();
 
-    // ADMIN PAGE
+    // ================= ADMIN PAGE =================
     if (document.getElementById("teamsAdmin")) {
+
         document.getElementById("timer").innerText =
             "Time Left: " + data.timeLeft + "s";
 
         let html = "";
+
         for (let team in data.teams) {
             html += `
                 <div class="team-box">
@@ -70,23 +91,25 @@ async function loadData() {
             `<div class="row-container">${html}</div>`;
     }
 
-    // TEAM PAGE
+    // ================= TEAM PAGE =================
     if (document.getElementById("teamsRow")) {
 
-        let html = "";
-        for (let team in data.teams) {
-            html += `
-                <div class="team-box">
-                    <h3>${team}</h3>
-                    <p>Capital: ₹${data.teams[team].capital}</p>
-                    <p>Your Current Bid: ₹${data.teams[team].bid}</p>
+        const teamName = document.getElementById("teamName").value.trim();
+
+        if (data.teams[teamName]) {
+
+            document.getElementById("teamsRow").innerHTML = `
+                <div class="row-container">
+                    <div class="team-box">
+                        <h2>${teamName}</h2>
+                        <p>Capital: ₹${data.teams[teamName].capital}</p>
+                        <p>Your Current Bid: ₹${data.teams[teamName].bid}</p>
+                    </div>
                 </div>
             `;
         }
 
-        document.getElementById("teamsRow").innerHTML =
-            `<div class="row-container">${html}</div>`;
-
+        // Show result only AFTER round ends
         if (data.roundEnded) {
             document.getElementById("resultBox").innerHTML = `
                 <h2>Winner: ${data.lastWinner || "No Winner"}</h2>
@@ -98,4 +121,5 @@ async function loadData() {
     }
 }
 
+// Auto refresh every second
 setInterval(loadData, 1000);
