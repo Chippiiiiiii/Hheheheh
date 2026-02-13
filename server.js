@@ -8,7 +8,6 @@ const PORT = process.env.PORT || 3000;
 
 let auction = {
     basePrice: 1000,
-    minIncrement: 100,
     highestBid: 0,
     highestTeam: "",
     teams: {},
@@ -17,8 +16,7 @@ let auction = {
     timeLeft: 60,
     timerRunning: false,
     roundEnded: false,
-    lastWinner: "",
-    lastWinningBid: 0
+    lastWinner: ""
 };
 
 // REGISTER TEAM
@@ -52,7 +50,6 @@ app.post("/start", (req, res) => {
 
     auction.roundEnded = false;
     auction.lastWinner = "";
-    auction.lastWinningBid = 0;
     auction.highestBid = 0;
     auction.highestTeam = "";
 
@@ -74,7 +71,7 @@ app.post("/start", (req, res) => {
     res.json({ success: true });
 });
 
-// PLACE BID
+// PLACE BID (can increase by ₹1)
 app.post("/bid", (req, res) => {
     const { teamName, amount } = req.body;
 
@@ -87,8 +84,8 @@ app.post("/bid", (req, res) => {
     if (amount < auction.basePrice)
         return res.json({ error: "Below base price" });
 
-    if (amount < auction.highestBid + auction.minIncrement)
-        return res.json({ error: "Bid too low" });
+    if (amount <= auction.highestBid)
+        return res.json({ error: "Bid must be higher than current highest bid" });
 
     if (amount > auction.teams[teamName].capital)
         return res.json({ error: "Not enough capital" });
@@ -100,12 +97,11 @@ app.post("/bid", (req, res) => {
     res.json({ success: true });
 });
 
-// END ROUND FUNCTION
+// END ROUND
 function endRound() {
 
     auction.roundEnded = true;
     auction.lastWinner = auction.highestTeam;
-    auction.lastWinningBid = auction.highestBid;
 
     if (auction.highestTeam) {
         auction.teams[auction.highestTeam].capital -= auction.highestBid;
@@ -116,13 +112,11 @@ function endRound() {
     auction.highestTeam = "";
 }
 
-// MANUAL END
 app.post("/end", (req, res) => {
     endRound();
     res.json({ success: true });
 });
 
-// GET DATA
 app.get("/data", (req, res) => {
     res.json(auction);
 });
