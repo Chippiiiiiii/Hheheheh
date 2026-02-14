@@ -1,5 +1,5 @@
 let savedTeam = localStorage.getItem("teamName") || null;
-const socket = io(); // connect to server
+const socket = io();
 
 // --- TEAM FUNCTIONS ---
 
@@ -18,6 +18,16 @@ window.register = async function () {
         localStorage.setItem("teamName", name);
         savedTeam = name;
         updateLayout();
+
+        // Immediately show team info card with initial values
+        const info = document.getElementById("teamInfo");
+        if (info) {
+            info.innerHTML = `
+            <div class="team-box">
+                <p>Capital: ₹0</p>
+                <p>Your Current Bid: ₹0</p>
+            </div>`;
+        }
     } else if (data.error) {
         alert(data.error);
     }
@@ -87,7 +97,7 @@ socket.on("update", (data) => {
     const basePriceDisplay = document.getElementById("basePriceDisplay");
     if (basePriceDisplay) basePriceDisplay.innerText = "Base Price: ₹" + data.basePrice;
 
-    // Highest Bidder
+    // Highest Bidder (Admin)
     const highest = document.getElementById("highestTeam");
     if (highest)
         highest.innerText = "Highest Bidder: " + (data.highestTeam || "None");
