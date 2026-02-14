@@ -59,6 +59,16 @@ window.endRound = async function () {
     await fetch("/end", { method: "POST" });
 };
 
+// Toggle leaderboard in admin
+window.toggleLeaderboard = function () {
+    const container = document.getElementById("leaderboardContainer");
+    if (container.style.display === "none") {
+        container.style.display = "block";
+    } else {
+        container.style.display = "none";
+    }
+};
+
 // --- LAYOUT CONTROL ---
 
 function updateLayout() {
@@ -137,6 +147,25 @@ socket.on("update", (data) => {
             tableHTML += "</tbody></table>";
             roundBidsContainer.innerHTML += tableHTML;
         });
+    }
+
+    // Leaderboard (Admin + Teams)
+    const leaderboardContainer = document.getElementById("leaderboardContainer");
+    if (leaderboardContainer) {
+        leaderboardContainer.innerHTML = `
+        <table>
+            <thead>
+                <tr><th>Team No</th><th>Team Name</th><th>Rounds Won</th></tr>
+            </thead>
+            <tbody>
+                ${data.leaderboard.map(l => `
+                    <tr>
+                        <td>${l.teamNo}</td>
+                        <td>${l.team}</td>
+                        <td>${l.wins}</td>
+                    </tr>`).join("")}
+            </tbody>
+        </table>`;
     }
 
     // Team Info (Teams Page)
