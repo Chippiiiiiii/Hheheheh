@@ -27,6 +27,7 @@ app.post("/register", (req, res) => {
     if (!teamName || teams[teamName]) {
         return res.json({ success: false, error: "Invalid or duplicate team" });
     }
+    // Assign initial capital set by admin
     teams[teamName] = { capital: initialCapital, bid: 0 };
     io.emit("update", getData());
     res.json({ success: true });
@@ -59,7 +60,8 @@ app.post("/settings", (req, res) => {
 app.post("/start", (req, res) => {
     timerRunning = true;
     currentRoundBids = {};
-    for (let t in teams) teams[t].bid = 0; // reset bids at start
+    // Reset bids at start
+    for (let t in teams) teams[t].bid = 0;
     io.emit("update", getData());
     res.json({ success: true });
 });
@@ -77,18 +79,14 @@ function endRoundLogic() {
 
     if (winner) {
         const [winnerName, winningBid] = winner;
-
-        // Deduct winning bid from capital
         if (teams[winnerName]) {
             teams[winnerName].capital -= winningBid;
             if (teams[winnerName].capital < 0) teams[winnerName].capital = 0;
-            teams[winnerName].bid = 0; // reset winner's bid
         }
-
         history.push({ team: winnerName, bid: winningBid });
     }
 
-    // Reset all bids for next round
+    // Reset all bids
     for (let t in teams) {
         teams[t].bid = 0;
     }
