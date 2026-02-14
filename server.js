@@ -59,32 +59,44 @@ app.post("/settings", (req, res) => {
 app.post("/start", (req, res) => {
     timerRunning = true;
     currentRoundBids = {};
+    for (let t in teams) teams[t].bid = 0; // reset bids at start
     io.emit("update", getData());
     res.json({ success: true });
 });
 
 // End round
 app.post("/end", (req, res) => {
+    endRoundLogic();
+    res.json({ success: true });
+});
+
+// Helper: round end logic
+function endRoundLogic() {
     timerRunning = false;
     let winner = Object.entries(currentRoundBids).sort((a,b)=>b[1]-a[1])[0];
 
     if (winner) {
         const [winnerName, winningBid] = winner;
 
-        // Deduct winning bid from winner's capital
+        // Deduct winning bid from capital
         if (teams[winnerName]) {
             teams[winnerName].capital -= winningBid;
-            if (teams[winnerName].capital < 0) teams[winnerName].capital = 0; // safety
+            if (teams[winnerName].capital < 0) teams[winnerName].capital = 0;
+            teams[winnerName].bid = 0; // reset winner's bid
         }
 
         history.push({ team: winnerName, bid: winningBid });
     }
 
+    // Reset all bids for next round
+    for (let t in teams) {
+        teams[t].bid = 0;
+    }
+    currentRoundBids = {};
+
     roundNumber++;
     io.emit("update", getData());
-    res.json({ success: true });
-});
-
+}
 
 // Helper: current state
 function getData() {
@@ -111,6 +123,9 @@ setInterval(() => {
     if (timerRunning && timeLeft > 0) {
         timeLeft--;
         io.emit("update", getData());
+        if (timeLeft === 0) {
+            endRoundLogic(); // auto end round when timer hits zero
+        }
     }
 }, 1000);
 
@@ -120,4 +135,3 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
