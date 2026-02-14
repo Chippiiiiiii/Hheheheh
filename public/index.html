@@ -8,26 +8,46 @@
 
 <div class="container">
 
+    <!-- TOP CENTER TITLE -->
     <h1 style="text-align:center;">AUCTION</h1>
 
+    <!-- TEAM NAME LEFT -->
     <div style="text-align:left; margin-bottom:20px;">
         <h3 id="teamLabel"></h3>
     </div>
 
+    <!-- CENTER SECTION -->
     <div class="center-box">
 
+        <!-- REGISTER -->
         <div class="card" id="registerCard">
             <input type="text" id="teamName" placeholder="Enter Team Name">
             <button onclick="register()">Register</button>
         </div>
 
+        <!-- BID -->
         <div class="card" id="bidCard" style="display:none;">
             <input type="number" id="bidAmount" placeholder="Enter Bid">
             <button onclick="bid()">Place Bid</button>
         </div>
 
+        <!-- TEAM INFO -->
         <div id="teamInfo"></div>
+
     </div>
+
+    <!-- WINNER TABLE -->
+    <h2 style="margin-top:40px;">Round Winners</h2>
+
+    <table id="winnerTable">
+        <thead>
+        <tr>
+            <th>S.No</th>
+            <th>Winner Team</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 
 </div>
 

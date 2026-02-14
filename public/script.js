@@ -1,5 +1,5 @@
-// ===== TEAM STORAGE =====
-let savedTeam = localStorage.getItem("teamName");
+// ================= TEAM SESSION =================
+let savedTeam = null;
 
 // ================= REGISTER =================
 window.register = async function () {
@@ -8,25 +8,32 @@ window.register = async function () {
     if (!input) return;
 
     const teamName = input.value.trim();
-    if (!teamName) return alert("Enter team name");
+    if (!teamName) {
+        alert("Enter team name");
+        return;
+    }
 
-    await fetch("/register", {
+    const res = await fetch("/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ teamName })
     });
 
-    localStorage.setItem("teamName", teamName);
-    savedTeam = teamName;
+    const data = await res.json();
 
-    updateTeamLayout();
+    if (data.success) {
+        savedTeam = teamName;
+        updateLayout();
+    }
 };
 
 // ================= PLACE BID =================
 window.bid = async function () {
 
+    if (!savedTeam) return;
+
     const amountInput = document.getElementById("bidAmount");
-    if (!amountInput || !savedTeam) return;
+    if (!amountInput) return;
 
     const amount = parseInt(amountInput.value);
 
@@ -70,8 +77,8 @@ window.endRound = async function () {
     await fetch("/end", { method: "POST" });
 };
 
-// ================= UPDATE TEAM LAYOUT =================
-function updateTeamLayout() {
+// ================= UPDATE LAYOUT =================
+function updateLayout() {
 
     const registerCard = document.getElementById("registerCard");
     const bidCard = document.getElementById("bidCard");
@@ -125,29 +132,44 @@ async function loadData() {
                         <td>${isHighest}</td>
                     </tr>
                 `;
-
                 sno++;
             }
         }
     }
 
-    // TEAM PAGE
+    // TEAM PAGE INFO
     if (savedTeam && data.teams[savedTeam]) {
 
         const info = document.getElementById("teamInfo");
-
-        // Capital should show only if admin set it (>0)
-        const capitalValue = data.teams[savedTeam].capital;
-
-        info.innerHTML = `
-            <div class="team-box">
-                ${capitalValue > 0 ? `<p>Capital: ₹${capitalValue}</p>` : ""}
-                <p>Your Current Bid: ₹${data.teams[savedTeam].bid}</p>
-            </div>
-        `;
+        if (info) {
+            info.innerHTML = `
+                <div class="team-box">
+                    <p>Capital: ₹${data.teams[savedTeam].capital}</p>
+                    <p>Your Current Bid: ₹${data.teams[savedTeam].bid}</p>
+                </div>
+            `;
+        }
     }
 
-    updateTeamLayout();
+    // WINNER TABLE
+    const winnerTable = document.getElementById("winnerTable");
+    if (winnerTable) {
+
+        const tbody = winnerTable.querySelector("tbody");
+        tbody.innerHTML = "";
+
+        data.history.forEach((item, index) => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${item.team}</td>
+                </tr>
+            `;
+        });
+    }
+
+    updateLayout();
 }
 
+// AUTO REFRESH
 setInterval(loadData, 1000);
