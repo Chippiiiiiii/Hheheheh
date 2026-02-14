@@ -8,7 +8,7 @@
 
 <div class="container">
 
-    <h1 class="main-title">AUCTION ADMIN</h1>
+    <h1 class="main-title"> ADMIN Dashboard</h1>
     <h3 id="timer" style="text-align:center;"></h3>
     <h3 id="highestTeam" style="text-align:center;"></h3>
 
@@ -19,6 +19,7 @@
         <button onclick="saveSettings()">Save Settings</button>
         <button onclick="startRound()">Start Round</button>
         <button onclick="endRound()">End Round</button>
+        <button onclick="toggleLeaderboard()">Leaderboard</button>
     </div>
 
     <h2>Registered Teams</h2>
@@ -39,6 +40,9 @@
 
     <h2>Round Bids</h2>
     <div id="roundBidsContainer"></div>
+
+    <h2>Leaderboard</h2>
+    <div id="leaderboardContainer" style="display:none;"></div>
 
 </div>
 
