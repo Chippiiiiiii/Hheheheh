@@ -113,9 +113,29 @@ socket.on("update", (data) => {
             tbody.innerHTML += `
             <tr>
                 <td>${i + 1}</td>
-                <td>${h.team}</td>
+                <td>${h.team || "No Winner"}</td>
                 <td>₹${h.bid}</td>
             </tr>`;
+        });
+    }
+
+    // Round Bids (Admin)
+    const roundBidsContainer = document.getElementById("roundBidsContainer");
+    if (roundBidsContainer) {
+        roundBidsContainer.innerHTML = "";
+        data.history.forEach((h) => {
+            let tableHTML = `
+            <h3>Round ${h.round}</h3>
+            <table>
+                <thead>
+                    <tr><th>Team No</th><th>Team Name</th><th>Bid</th></tr>
+                </thead>
+                <tbody>`;
+            h.allBids.forEach(b => {
+                tableHTML += `<tr><td>${b.teamNo}</td><td>${b.team}</td><td>₹${b.bid}</td></tr>`;
+            });
+            tableHTML += "</tbody></table>";
+            roundBidsContainer.innerHTML += tableHTML;
         });
     }
 
@@ -140,7 +160,7 @@ socket.on("update", (data) => {
             tbody.innerHTML += `
             <tr>
                 <td>${index + 1}</td>
-                <td>${item.team}</td>
+                <td>${item.team || "No Winner"}</td>
             </tr>`;
         });
     }
