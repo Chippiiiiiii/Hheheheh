@@ -45,6 +45,11 @@ body {
     text-align: center;
 }
 
+.admin-card {
+    width: 400px;
+    margin: auto;
+}
+
 input {
     width: 90%;
     padding: 10px;
@@ -66,6 +71,7 @@ button {
     font-weight: bold;
     cursor: pointer;
     transition: 0.3s;
+    margin-bottom: 10px;
 }
 
 button:hover {
@@ -83,19 +89,19 @@ button:hover {
     text-align: center;
 }
 
-/* ===== ROUND WINNERS SECTION ===== */
+/* ===== TABLE SECTION ===== */
 .winner-section {
     width: 80%;
     margin: 50px auto 0 auto;
+    text-align: center;
 }
 
 .winner-section h2 {
-    text-align: center;
     margin-bottom: 20px;
 }
 
 /* ===== TABLE DESIGN ===== */
-#winnerTable {
+table {
     width: 100%;
     border-collapse: collapse;
     background: #1f1f1f;
@@ -103,18 +109,17 @@ button:hover {
     overflow: hidden;
 }
 
-#winnerTable th {
+th {
     background: #00c853;
     padding: 12px;
-    text-align: center;
 }
 
-#winnerTable td {
+td {
     padding: 12px;
-    text-align: center;
     border-bottom: 1px solid #333;
+    text-align: center;
 }
 
-#winnerTable tr:hover {
+tr:hover {
     background: #2a2a2a;
 }

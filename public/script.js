@@ -77,7 +77,7 @@ window.endRound = async function () {
     await fetch("/end", { method: "POST" });
 };
 
-// ================= UPDATE LAYOUT =================
+// ================= UPDATE TEAM LAYOUT =================
 function updateLayout() {
 
     const registerCard = document.getElementById("registerCard");
@@ -101,43 +101,35 @@ async function loadData() {
     const res = await fetch("/data");
     const data = await res.json();
 
-    // ADMIN PAGE
-    if (document.getElementById("adminTable")) {
+    // ===== ADMIN PAGE =====
+    const highest = document.getElementById("highestTeam");
+    if (highest)
+        highest.innerText =
+            "Highest Bidder: " + (data.highestTeam || "None");
 
-        const highest = document.getElementById("highestTeam");
-        if (highest)
-            highest.innerText =
-                "Highest Bidder: " + (data.highestTeam || "None");
+    const timer = document.getElementById("timer");
+    if (timer)
+        timer.innerText =
+            "Time Left: " + data.timeLeft + "s";
 
-        const timer = document.getElementById("timer");
-        if (timer)
-            timer.innerText =
-                "Time Left: " + data.timeLeft + "s";
+    const adminHistoryTable = document.getElementById("adminHistoryTable");
+    if (adminHistoryTable) {
 
-        const tbody = document.querySelector("#adminTable tbody");
-        if (tbody) {
-            tbody.innerHTML = "";
+        const tbody = adminHistoryTable.querySelector("tbody");
+        tbody.innerHTML = "";
 
-            let sno = 1;
-
-            for (let team in data.teams) {
-                const isHighest =
-                    team === data.highestTeam ? "Yes" : "No";
-
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${sno}</td>
-                        <td>${team}</td>
-                        <td>₹${data.teams[team].bid}</td>
-                        <td>${isHighest}</td>
-                    </tr>
-                `;
-                sno++;
-            }
-        }
+        data.history.forEach((item, index) => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${item.team}</td>
+                    <td>₹${item.bid}</td>
+                </tr>
+            `;
+        });
     }
 
-    // TEAM PAGE INFO
+    // ===== TEAM PAGE =====
     if (savedTeam && data.teams[savedTeam]) {
 
         const info = document.getElementById("teamInfo");
@@ -151,7 +143,6 @@ async function loadData() {
         }
     }
 
-    // WINNER TABLE
     const winnerTable = document.getElementById("winnerTable");
     if (winnerTable) {
 
