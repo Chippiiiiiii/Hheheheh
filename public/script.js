@@ -1,4 +1,3 @@
-// ================= TEAM SESSION =================
 let savedTeam = null;
 
 // ================= REGISTER =================
@@ -32,10 +31,7 @@ window.bid = async function () {
 
     if (!savedTeam) return;
 
-    const amountInput = document.getElementById("bidAmount");
-    if (!amountInput) return;
-
-    const amount = parseInt(amountInput.value);
+    const amount = parseInt(document.getElementById("bidAmount").value);
 
     const res = await fetch("/bid", {
         method: "POST",
@@ -50,19 +46,13 @@ window.bid = async function () {
 // ================= ADMIN FUNCTIONS =================
 window.saveSettings = async function () {
 
-    const base = document.getElementById("basePrice");
-    const cap = document.getElementById("capital");
-    const time = document.getElementById("roundTime");
-
-    if (!base || !cap || !time) return;
-
     await fetch("/settings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            basePrice: parseInt(base.value) || 0,
-            capital: parseInt(cap.value) || 0,
-            roundTime: parseInt(time.value) || 0
+            basePrice: parseInt(basePrice.value) || 0,
+            capital: parseInt(capital.value) || 0,
+            roundTime: parseInt(roundTime.value) || 0
         })
     });
 
@@ -77,65 +67,44 @@ window.endRound = async function () {
     await fetch("/end", { method: "POST" });
 };
 
-// ================= UPDATE TEAM LAYOUT =================
-function updateLayout() {
-
-    const registerCard = document.getElementById("registerCard");
-    const bidCard = document.getElementById("bidCard");
-    const teamLabel = document.getElementById("teamLabel");
-
-    if (savedTeam) {
-        if (registerCard) registerCard.style.display = "none";
-        if (bidCard) bidCard.style.display = "block";
-        if (teamLabel) teamLabel.innerText = "Team name: " + savedTeam;
-    } else {
-        if (registerCard) registerCard.style.display = "block";
-        if (bidCard) bidCard.style.display = "none";
-        if (teamLabel) teamLabel.innerText = "";
-    }
-}
-
 // ================= LOAD DATA =================
 async function loadData() {
 
     const res = await fetch("/data");
     const data = await res.json();
 
-    // ===== ADMIN PAGE =====
-
-    // Highest Bidder
+    // ===== Highest Bidder + Timer =====
     const highest = document.getElementById("highestTeam");
     if (highest)
         highest.innerText =
             "Highest Bidder: " + (data.highestTeam || "None");
 
-    // Timer
     const timer = document.getElementById("timer");
     if (timer)
         timer.innerText =
             "Time Left: " + data.timeLeft + "s";
 
-    // ===== ADMIN TEAM LIST TABLE =====
+    // ===== REGISTERED TEAMS TABLE =====
     const teamListTable = document.getElementById("teamListTable");
     if (teamListTable) {
 
         const tbody = teamListTable.querySelector("tbody");
         tbody.innerHTML = "";
 
-        let sno = 1;
+        let teamNo = 1;
 
         for (let team in data.teams) {
             tbody.innerHTML += `
                 <tr>
-                    <td>${sno}</td>
+                    <td>${teamNo}</td>
                     <td>${team}</td>
                 </tr>
             `;
-            sno++;
+            teamNo++;
         }
     }
 
-    // ===== ADMIN ROUND HISTORY TABLE =====
+    // ===== ROUND RESULTS SUMMARY =====
     const adminHistoryTable = document.getElementById("adminHistoryTable");
     if (adminHistoryTable) {
 
@@ -150,6 +119,49 @@ async function loadData() {
                     <td>₹${item.bid}</td>
                 </tr>
             `;
+        });
+    }
+
+    // ===== LOCKED TABLE PER ROUND =====
+    const roundDetailsContainer = document.getElementById("roundDetailsContainer");
+
+    if (roundDetailsContainer) {
+
+        roundDetailsContainer.innerHTML = "";
+
+        data.roundDetails.forEach((round) => {
+
+            let tableHTML = `
+                <div class="round-card">
+                    <h3>Round ${round.round}</h3>
+                    <table class="roundTable">
+                        <thead>
+                            <tr>
+                                <th>Team No</th>
+                                <th>Team Name</th>
+                                <th>Bid</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            round.bids.forEach((bid) => {
+                tableHTML += `
+                    <tr>
+                        <td>${bid.teamNo}</td>
+                        <td>${bid.team}</td>
+                        <td>₹${bid.bid}</td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            roundDetailsContainer.innerHTML += tableHTML;
         });
     }
 
@@ -183,9 +195,7 @@ async function loadData() {
             `;
         });
     }
-
-    updateLayout();
 }
 
-// AUTO REFRESH EVERY SECOND
+// AUTO REFRESH
 setInterval(loadData, 1000);
