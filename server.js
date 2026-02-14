@@ -16,7 +16,9 @@ let auction = {
     timeLeft: 60,
     timerRunning: false,
     roundEnded: false,
-    lastWinner: ""
+    lastWinner: "",
+    lastWinningBid: 0,
+    history: []
 };
 
 // REGISTER TEAM
@@ -50,6 +52,7 @@ app.post("/start", (req, res) => {
 
     auction.roundEnded = false;
     auction.lastWinner = "";
+    auction.lastWinningBid = 0;
     auction.highestBid = 0;
     auction.highestTeam = "";
 
@@ -71,7 +74,7 @@ app.post("/start", (req, res) => {
     res.json({ success: true });
 });
 
-// PLACE BID (can increase by ₹1)
+// PLACE BID (₹1 increment allowed)
 app.post("/bid", (req, res) => {
     const { teamName, amount } = req.body;
 
@@ -101,12 +104,24 @@ app.post("/bid", (req, res) => {
 function endRound() {
 
     auction.roundEnded = true;
-    auction.lastWinner = auction.highestTeam;
 
     if (auction.highestTeam) {
+
+        auction.history.push({
+            team: auction.highestTeam,
+            bid: auction.highestBid
+        });
+
         auction.teams[auction.highestTeam].capital -= auction.highestBid;
-        auction.teams[auction.highestTeam].bid = 0;
     }
+
+    // RESET ALL BIDS
+    for (let team in auction.teams) {
+        auction.teams[team].bid = 0;
+    }
+
+    auction.lastWinner = auction.highestTeam;
+    auction.lastWinningBid = auction.highestBid;
 
     auction.highestBid = 0;
     auction.highestTeam = "";
@@ -121,4 +136,4 @@ app.get("/data", (req, res) => {
     res.json(auction);
 });
 
-app.listen(PORT, () => console.log("Server running"));
+app.listen(PORT, () => console.log("Server running on port " + PORT));
