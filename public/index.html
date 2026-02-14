@@ -5,23 +5,33 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
 <div class="container">
 
-    <h1>Team Auction</h1>
-
-    <div class="card" id="registerCard">
-        <input type="text" id="teamName" placeholder="Team Name">
-        <button onclick="register()">Register</button>
+    <!-- TOP LEFT TEAM NAME -->
+    <div class="top-bar">
+        <h2 id="teamTitle">Not Registered</h2>
+        <button onclick="logout()">Change Team</button>
     </div>
 
-    <div class="card" id="bidCard" style="display:none;">
-        <input type="number" id="bidAmount" placeholder="Enter Bid">
-        <button onclick="bid()">Place Bid</button>
+    <!-- CENTER BIDDING CARD -->
+    <div class="center-box">
+
+        <div class="card" id="registerCard">
+            <input type="text" id="teamName" placeholder="Enter Team Name">
+            <button onclick="register()">Register</button>
+        </div>
+
+        <div class="card" id="bidCard" style="display:none;">
+            <input type="number" id="bidAmount" placeholder="Enter Bid">
+            <button onclick="bid()">Place Bid</button>
+        </div>
+
+        <div id="teamInfo"></div>
     </div>
 
-    <div id="teamInfo"></div>
-
-    <h2 style="margin-top:30px;">Round Winners</h2>
+    <!-- WINNER TABLE -->
+    <h2 style="margin-top:40px;">Round Winners</h2>
 
     <table id="winnerTable">
         <thead>
