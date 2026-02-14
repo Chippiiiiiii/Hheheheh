@@ -102,16 +102,40 @@ async function loadData() {
     const data = await res.json();
 
     // ===== ADMIN PAGE =====
+
+    // Highest Bidder
     const highest = document.getElementById("highestTeam");
     if (highest)
         highest.innerText =
             "Highest Bidder: " + (data.highestTeam || "None");
 
+    // Timer
     const timer = document.getElementById("timer");
     if (timer)
         timer.innerText =
             "Time Left: " + data.timeLeft + "s";
 
+    // ===== ADMIN TEAM LIST TABLE =====
+    const teamListTable = document.getElementById("teamListTable");
+    if (teamListTable) {
+
+        const tbody = teamListTable.querySelector("tbody");
+        tbody.innerHTML = "";
+
+        let sno = 1;
+
+        for (let team in data.teams) {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${sno}</td>
+                    <td>${team}</td>
+                </tr>
+            `;
+            sno++;
+        }
+    }
+
+    // ===== ADMIN ROUND HISTORY TABLE =====
     const adminHistoryTable = document.getElementById("adminHistoryTable");
     if (adminHistoryTable) {
 
@@ -129,7 +153,7 @@ async function loadData() {
         });
     }
 
-    // ===== TEAM PAGE =====
+    // ===== TEAM PAGE INFO =====
     if (savedTeam && data.teams[savedTeam]) {
 
         const info = document.getElementById("teamInfo");
@@ -143,6 +167,7 @@ async function loadData() {
         }
     }
 
+    // ===== TEAM PAGE WINNER TABLE =====
     const winnerTable = document.getElementById("winnerTable");
     if (winnerTable) {
 
@@ -162,5 +187,5 @@ async function loadData() {
     updateLayout();
 }
 
-// AUTO REFRESH
+// AUTO REFRESH EVERY SECOND
 setInterval(loadData, 1000);
