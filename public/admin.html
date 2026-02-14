@@ -1,51 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Team Auction</title>
+    <title>Admin Dashboard - Auction</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="container">
 
-    <h1 class="main-title">AUCTION</h1>
-    <h3 id="teamTimer" style="text-align:center;"></h3>
+    <h1 class="main-title">AUCTION ADMIN</h1>
+    <h3 id="timer" style="text-align:center;"></h3>
+    <h3 id="highestTeam" style="text-align:center;"></h3>
 
-    <div class="team-name-wrapper">
-        <h3 id="teamLabel"></h3>
+    <div class="card admin-card">
+        <input type="number" id="capital" placeholder="Initial Capital" value="100">
+        <input type="number" id="roundTime" placeholder="Round Time (seconds)" value="60">
+        <button onclick="saveSettings()">Save Settings</button>
+        <button onclick="startRound()">Start Round</button>
+        <button onclick="endRound()">End Round</button>
     </div>
 
-    <div class="center-section">
+    <h2>Registered Teams</h2>
+    <table id="teamListTable">
+        <thead>
+        <tr><th>S.No</th><th>Team Name</th></tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 
-        <div class="card" id="registerCard">
-            <input type="text" id="teamName" placeholder="Enter Team Name">
-            <button onclick="register()">Register</button>
-        </div>
-
-        <div class="card" id="bidCard" style="display:none;">
-            <input type="number" id="bidAmount" placeholder="Enter Bid">
-            <button onclick="bid()">Place Bid</button>
-        </div>
-
-        <div id="teamInfo"></div>
-
-    </div>
-
-    <div class="winner-section">
-
-        <h2>Round Winners</h2>
-
-        <table id="winnerTable">
-            <thead>
-            <tr>
-                <th>S.No</th>
-                <th>Winner Team</th>
-            </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-
-    </div>
+    <h2>Round Results</h2>
+    <table id="adminHistoryTable">
+        <thead>
+        <tr><th>S.No</th><th>Team</th><th>Winning Bid</th></tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 
 </div>
 
