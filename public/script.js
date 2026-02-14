@@ -1,4 +1,7 @@
-let savedTeam = null;
+// ================= TEAM SESSION =================
+
+// Restore saved team from browser
+let savedTeam = localStorage.getItem("teamName");
 
 // ================= REGISTER =================
 window.register = async function () {
@@ -21,6 +24,7 @@ window.register = async function () {
     const data = await res.json();
 
     if (data.success) {
+        localStorage.setItem("teamName", teamName);
         savedTeam = teamName;
         updateLayout();
     }
@@ -29,7 +33,10 @@ window.register = async function () {
 // ================= PLACE BID =================
 window.bid = async function () {
 
-    if (!savedTeam) return;
+    if (!savedTeam) {
+        alert("Register first");
+        return;
+    }
 
     const amount = parseInt(document.getElementById("bidAmount").value);
 
@@ -67,11 +74,36 @@ window.endRound = async function () {
     await fetch("/end", { method: "POST" });
 };
 
+// ================= UPDATE LAYOUT =================
+function updateLayout() {
+
+    const registerCard = document.getElementById("registerCard");
+    const bidCard = document.getElementById("bidCard");
+    const teamLabel = document.getElementById("teamLabel");
+
+    if (savedTeam) {
+        if (registerCard) registerCard.style.display = "none";
+        if (bidCard) bidCard.style.display = "block";
+        if (teamLabel) teamLabel.innerText = "Team name: " + savedTeam;
+    } else {
+        if (registerCard) registerCard.style.display = "block";
+        if (bidCard) bidCard.style.display = "none";
+        if (teamLabel) teamLabel.innerText = "";
+    }
+}
+
 // ================= LOAD DATA =================
 async function loadData() {
 
     const res = await fetch("/data");
     const data = await res.json();
+
+    // If saved team not found on server → clear it
+    if (savedTeam && !data.teams[savedTeam]) {
+        localStorage.removeItem("teamName");
+        savedTeam = null;
+        updateLayout();
+    }
 
     // ===== Highest Bidder + Timer =====
     const highest = document.getElementById("highestTeam");
@@ -195,7 +227,12 @@ async function loadData() {
             `;
         });
     }
+
+    updateLayout();
 }
 
 // AUTO REFRESH
 setInterval(loadData, 1000);
+
+// Initial layout
+updateLayout();
