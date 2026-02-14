@@ -17,7 +17,9 @@ let auction = {
     timerRunning: false,
     history: [],
     roundDetails: [],
-    roundNumber: 0
+    roundNumber: 0,
+    currentRoundBids: {},
+    dashboardActive: false
 };
 
 app.get("/", (req, res) => {
@@ -28,8 +30,9 @@ app.get("/admin", (req, res) => {
     res.sendFile(__dirname + "/public/admin.html");
 });
 
-app.get("/assets", (req, res) => {
-    res.sendFile(__dirname + "/public/assets.html");
+app.post("/activateDashboard", (req, res) => {
+    auction.dashboardActive = true;
+    res.json({ success: true });
 });
 
 app.post("/register", (req, res) => {
@@ -48,10 +51,12 @@ app.post("/register", (req, res) => {
 
 app.post("/settings", (req, res) => {
     const { basePrice, capital, roundTime } = req.body;
+
     auction.basePrice = basePrice;
     auction.initialCapital = capital;
     auction.roundTime = roundTime;
     auction.timeLeft = roundTime;
+
     res.json({ success: true });
 });
 
@@ -65,6 +70,7 @@ app.post("/start", (req, res) => {
     auction.highestTeam = null;
     auction.timeLeft = auction.roundTime;
     auction.timerRunning = true;
+    auction.currentRoundBids = {};
 
     const interval = setInterval(() => {
 
@@ -74,6 +80,7 @@ app.post("/start", (req, res) => {
             clearInterval(interval);
             auction.timerRunning = false;
             endRound();
+            auction.timeLeft = auction.roundTime;
         }
 
     }, 1000);
@@ -104,6 +111,9 @@ app.post("/bid", (req, res) => {
     auction.highestTeam = teamName;
     auction.teams[teamName].bid = amount;
 
+    // Live tracking
+    auction.currentRoundBids[teamName] = amount;
+
     res.json({ success: true });
 });
 
@@ -127,7 +137,7 @@ function endRound() {
         roundData.bids.push({
             teamNo: teamNo,
             team: team,
-            bid: auction.teams[team].bid
+            bid: auction.currentRoundBids[team] || 0
         });
         teamNo++;
     }
@@ -140,13 +150,15 @@ function endRound() {
         auction.teams[team].bid = 0;
     }
 
+    auction.currentRoundBids = {};
     auction.highestBid = 0;
     auction.highestTeam = null;
 }
 
 app.post("/end", (req, res) => {
-    endRound();
     auction.timerRunning = false;
+    endRound();
+    auction.timeLeft = auction.roundTime;
     res.json({ success: true });
 });
 
