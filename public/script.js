@@ -59,14 +59,9 @@ window.endRound = async function () {
     await fetch("/end", { method: "POST" });
 };
 
-// Toggle leaderboard in admin
-window.toggleLeaderboard = function () {
-    const container = document.getElementById("leaderboardContainer");
-    if (container.style.display === "none") {
-        container.style.display = "block";
-    } else {
-        container.style.display = "none";
-    }
+// Admin button triggers server toggle
+window.toggleLeaderboard = async function () {
+    await fetch("/toggleLeaderboard", { method: "POST" });
 };
 
 // --- LAYOUT CONTROL ---
@@ -149,23 +144,28 @@ socket.on("update", (data) => {
         });
     }
 
-    // Leaderboard (Admin + Teams)
+    // Leaderboard (Admin + Teams, controlled by Admin)
     const leaderboardContainer = document.getElementById("leaderboardContainer");
     if (leaderboardContainer) {
-        leaderboardContainer.innerHTML = `
-        <table>
-            <thead>
-                <tr><th>Team No</th><th>Team Name</th><th>Assets Owned</th></tr>
-            </thead>
-            <tbody>
-                ${data.leaderboard.map(l => `
-                    <tr>
-                        <td>${l.teamNo}</td>
-                        <td>${l.team}</td>
-                        <td>${l.wins}</td>
-                    </tr>`).join("")}
-            </tbody>
-        </table>`;
+        if (data.showLeaderboard) {
+            leaderboardContainer.style.display = "block";
+            leaderboardContainer.innerHTML = `
+            <table>
+                <thead>
+                    <tr><th>Team No</th><th>Team Name</th><th>Rounds Won</th></tr>
+                </thead>
+                <tbody>
+                    ${data.leaderboard.map(l => `
+                        <tr>
+                            <td>${l.teamNo}</td>
+                            <td>${l.team}</td>
+                            <td>${l.wins}</td>
+                        </tr>`).join("")}
+                </tbody>
+            </table>`;
+        } else {
+            leaderboardContainer.style.display = "none";
+        }
     }
 
     // Team Info (Teams Page)
