@@ -18,6 +18,16 @@ window.register = async function () {
         localStorage.setItem("teamName", name);
         savedTeam = name;
         updateLayout();
+
+        // Immediately show capital after registration
+        const info = document.getElementById("teamInfo");
+        if (info) {
+            info.innerHTML = `
+                <div class="team-box">
+                    <p>Capital: ₹${data.capital || 0}</p>
+                    <p>Your Current Bid: ₹0</p>
+                </div>`;
+        }
     } else if (data.error) {
         alert(data.error);
     }
@@ -27,6 +37,8 @@ window.bid = async function () {
     if (!savedTeam) return alert("Register first");
 
     const amount = parseInt(document.getElementById("bidAmount").value);
+    if (!amount || amount <= 0) return alert("Enter valid bid amount");
+
     const res = await fetch("/bid", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -34,7 +46,9 @@ window.bid = async function () {
     });
 
     const data = await res.json();
-    if (data.error) alert(data.error);
+    if (data.error) {
+        alert(data.error);
+    }
 };
 
 // --- ADMIN FUNCTIONS ---
@@ -59,7 +73,6 @@ window.endRound = async function () {
     await fetch("/end", { method: "POST" });
 };
 
-// Admin button triggers server toggle
 window.toggleLeaderboard = async function () {
     await fetch("/toggleLeaderboard", { method: "POST" });
 };
@@ -144,7 +157,7 @@ socket.on("update", (data) => {
         });
     }
 
-    // Leaderboard (Admin + Teams, controlled by Admin)
+    // Leaderboard
     const leaderboardContainer = document.getElementById("leaderboardContainer");
     if (leaderboardContainer) {
         if (data.showLeaderboard) {
