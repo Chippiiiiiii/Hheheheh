@@ -10,35 +10,29 @@
 
     <h1 class="main-title">AUCTION</h1>
 
-    <!-- Status Bar -->
-    <div class="status-bar card">
-        <div class="status-item">
-            <span class="icon">⏱</span>
-            <h3 id="teamTimer">Time Left: 0s</h3>
-        </div>
-        <div class="status-item">
-            <span class="icon">💰</span>
-            <h3 id="basePriceDisplay">Base Price: ₹0</h3>
-        </div>
+    <!-- Status Bar (Centered) -->
+    <div class="status-bar card center-text">
+        <h3 id="teamTimer">Time Left: 0s</h3>
+        <h3 id="basePriceDisplay">Base Price: ₹0</h3>
     </div>
 
-    <!-- Team Name -->
-    <div class="team-name-wrapper card">
+    <!-- Team Name (Left aligned) -->
+    <div class="team-name-wrapper card left-text">
         <h2 id="teamLabel">Team name: </h2>
     </div>
 
-    <!-- Registration -->
-    <div class="card" id="registerCard">
-        <h2>Register Team</h2>
-        <input type="text" id="teamName" placeholder="Enter Team Name">
-        <button onclick="register()">Register</button>
-    </div>
-
-    <!-- Bidding -->
-    <div class="card" id="bidCard" style="display:none;">
+    <!-- Bidding (Centered, smaller) -->
+    <div class="card bid-card center-text" id="bidCard" style="display:none;">
         <h2>Place Your Bid</h2>
         <input type="number" id="bidAmount" placeholder="Enter Bid">
         <button onclick="bid()">Place Bid</button>
+    </div>
+
+    <!-- Registration -->
+    <div class="card center-text" id="registerCard">
+        <h2>Register Team</h2>
+        <input type="text" id="teamName" placeholder="Enter Team Name">
+        <button onclick="register()">Register</button>
     </div>
 
     <!-- Team Info -->
@@ -56,15 +50,12 @@
     </div>
 
     <!-- Leaderboard -->
-    <div class="card leaderboard-card">
+    <div class="card">
         <h2>Leaderboard</h2>
-        <div id="leaderboardContainer" class="fade"></div>
+        <div id="leaderboardContainer"></div>
     </div>
 
 </div>
-
-<!-- Toast Notification -->
-<div id="toast" class="toast"></div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="script.js"></script>
