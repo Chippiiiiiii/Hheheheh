@@ -5,12 +5,13 @@ body {
   font-family: 'Inter', sans-serif;
   margin: 0;
   padding: 0;
+  line-height: 1.6; /* Better readability */
 }
 
 .container {
   max-width: 900px;
   margin: auto;
-  padding: 20px;
+  padding: 40px; /* More breathing room */
 }
 
 /* Titles */
@@ -18,7 +19,7 @@ body {
   text-align: center;
   color: #00ff66;
   font-size: 2.5rem;
-  margin-bottom: 20px;
+  margin-bottom: 40px; /* Extra spacing below title */
 }
 
 /* Status Bar */
@@ -26,12 +27,13 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 30px; /* Space below status bar */
 }
 
 .status-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
 .status-item h3 {
@@ -48,21 +50,21 @@ body {
 .card {
   background: #1e1e1e;
   border-radius: 8px;
-  padding: 20px;
-  margin: 15px 0;
+  padding: 30px; /* More padding inside cards */
+  margin: 30px 0; /* More space between cards */
   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
 
 .card h2 {
   color: #00ff66;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 /* Inputs & Buttons */
 input {
   width: 100%;
-  padding: 10px;
-  margin: 10px 0;
+  padding: 12px;
+  margin: 20px 0; /* More spacing around inputs */
   border-radius: 6px;
   border: 1px solid #333;
   background: #222;
@@ -72,7 +74,7 @@ input {
 button {
   background-color: #00ff66;
   border: none;
-  padding: 10px 20px;
+  padding: 12px 24px;
   border-radius: 6px;
   color: #000;
   font-weight: bold;
@@ -88,11 +90,12 @@ button:hover {
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 15px;
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
 th, td {
-  padding: 12px;
+  padding: 14px;
   border-bottom: 1px solid #333;
 }
 
@@ -119,6 +122,14 @@ tr:hover {
 .fade.hidden {
   opacity: 0;
   pointer-events: none;
+}
+
+/* Team Info Box */
+.team-box {
+  background: #222;
+  padding: 20px;
+  border-radius: 6px;
+  margin-top: 15px;
 }
 
 /* Toast Notification */
