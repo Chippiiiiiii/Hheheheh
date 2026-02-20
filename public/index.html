@@ -9,30 +9,30 @@
 <div class="container">
 
     <h1 class="main-title">AUCTION</h1>
-    <h3 id="teamTimer" style="text-align:center;"></h3>
-    <h3 id="basePriceDisplay" style="text-align:center;"></h3>
+    <div class="status-bar">
+        <h3 id="teamTimer"></h3>
+        <h3 id="basePriceDisplay"></h3>
+    </div>
 
     <div class="team-name-wrapper">
         <h3 id="teamLabel"></h3>
     </div>
 
-    <div class="center-section">
-
-        <div class="card" id="registerCard">
-            <input type="text" id="teamName" placeholder="Enter Team Name">
-            <button onclick="register()">Register</button>
-        </div>
-
-        <div class="card" id="bidCard" style="display:none;">
-            <input type="number" id="bidAmount" placeholder="Enter Bid">
-            <button onclick="bid()">Place Bid</button>
-        </div>
-
-        <div id="teamInfo"></div>
-
+    <div class="card" id="registerCard">
+        <h2>Register Team</h2>
+        <input type="text" id="teamName" placeholder="Enter Team Name">
+        <button onclick="register()">Register</button>
     </div>
 
-    <div class="winner-section">
+    <div class="card" id="bidCard" style="display:none;">
+        <h2>Place Your Bid</h2>
+        <input type="number" id="bidAmount" placeholder="Enter Bid">
+        <button onclick="bid()">Place Bid</button>
+    </div>
+
+    <div id="teamInfo" class="card"></div>
+
+    <div class="card">
         <h2>Round Winners</h2>
         <table id="winnerTable">
             <thead>
@@ -42,7 +42,7 @@
         </table>
     </div>
 
-    <div class="leaderboard-section">
+    <div class="card">
         <h2>Leaderboard</h2>
         <div id="leaderboardContainer"></div>
     </div>
