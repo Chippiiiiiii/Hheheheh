@@ -56,25 +56,38 @@ body {
   color: #00ff66;
 }
 
-/* Bid Card (compact, centered) */
-.bid-card {
+/* Compact Bid & Register Cards */
+.bid-card,
+#registerCard {
   text-align: center;
+  max-width: 300px;   /* restrict width */
+  margin: 0 auto 30px auto; /* center with spacing below */
+  padding: 20px;      /* reduce padding */
 }
-.bid-card input {
-  width: 200px; /* smaller input */
+
+.bid-card h2,
+#registerCard h2 {
+  font-size: 1.2rem;  /* smaller heading */
+  margin-bottom: 15px;
+}
+
+.bid-card input,
+#registerCard input {
+  width: 150px;       /* smaller input box */
+  padding: 8px;
   margin: 10px auto;
   display: block;
 }
-.bid-card button {
-  display: block;
+
+.bid-card button,
+#registerCard button {
+  padding: 8px 16px;  /* smaller button */
+  font-size: 0.9rem;
   margin: 10px auto;
 }
 
-/* Inputs & Buttons */
+/* Inputs & Buttons (general fallback) */
 input {
-  width: 100%;
-  padding: 12px;
-  margin: 20px 0;
   border-radius: 6px;
   border: 1px solid #333;
   background: #222;
@@ -84,7 +97,6 @@ input {
 button {
   background-color: #00ff66;
   border: none;
-  padding: 12px 24px;
   border-radius: 6px;
   color: #000;
   font-weight: bold;
