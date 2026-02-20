@@ -9,53 +9,51 @@
 <div class="container">
 
     <h1 class="main-title">AUCTION</h1>
-
-    <!-- Status Bar (Centered) -->
-    <div class="status-bar card center-text">
-        <h3 id="teamTimer">Time Left: 0s</h3>
-        <h3 id="basePriceDisplay">Base Price: ₹0</h3>
-    </div>
+    <h3 id="teamTimer" style="text-align:center;">Time Left: 0s</h3>
+    <h3 id="basePriceDisplay" style="text-align:center;">Base Price: ₹0</h3>
 
     <!-- Team Name (Left aligned) -->
-    <div class="team-name-wrapper card left-text">
+    <div class="team-name-wrapper">
         <h2 id="teamLabel">Team name: </h2>
     </div>
 
     <!-- Bidding (Centered, smaller) -->
-    <div class="card bid-card center-text" id="bidCard" style="display:none;">
-        <h2>Place Your Bid</h2>
-        <input type="number" id="bidAmount" placeholder="Enter Bid">
-        <button onclick="bid()">Place Bid</button>
+    <div class="center-section">
+        <div class="card" id="bidCard" style="display:none;">
+            <h2>Place Your Bid</h2>
+            <input type="number" id="bidAmount" placeholder="Enter Bid">
+            <button onclick="bid()">Place Bid</button>
+        </div>
+
+        <!-- Registration -->
+        <div class="card" id="registerCard">
+            <h2>Register Team</h2>
+            <input type="text" id="teamName" placeholder="Enter Team Name">
+            <button onclick="register()">Register</button>
+        </div>
+
+        <!-- Team Info -->
+        <div id="teamInfo" class="card"></div>
+
+        <!-- Round Winners -->
+        <div class="card">
+            <h2>Round Winners</h2>
+            <table id="winnerTable">
+                <thead>
+                    <tr><th>S.No</th><th>Winner Team</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Leaderboard -->
+        <div class="card">
+            <h2>Leaderboard</h2>
+            <div id="leaderboardContainer"></div>
+        </div>
     </div>
 
-    <!-- Registration -->
-    <div class="card center-text" id="registerCard">
-        <h2>Register Team</h2>
-        <input type="text" id="teamName" placeholder="Enter Team Name">
-        <button onclick="register()">Register</button>
-    </div>
-
-    <!-- Team Info -->
-    <div id="teamInfo" class="card"></div>
-
-    <!-- Round Winners -->
-    <div class="card">
-        <h2>Round Winners</h2>
-        <table id="winnerTable">
-            <thead>
-                <tr><th>S.No</th><th>Winner Team</th></tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
-
-    <!-- Leaderboard -->
-    <div class="card">
-        <h2>Leaderboard</h2>
-        <div id="leaderboardContainer"></div>
-    </div>
-
-</div>
+</div> <!-- ✅ close container only once -->
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="script.js"></script>
