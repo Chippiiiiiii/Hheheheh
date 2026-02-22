@@ -5,14 +5,14 @@ body {
 }
 
 .container {
-  max-width: 800px;
+  max-width: 1000px;
   margin: auto;
   padding: 20px;
 }
 
 .main-title {
   text-align: center;
-  color: white; /* Title in white */
+  color: white;
 }
 
 .status-bar {
@@ -22,7 +22,7 @@ body {
 }
 
 .status-bar h3 {
-  color: white; /* Timer + Base Price in white */
+  color: white;
 }
 
 .card {
@@ -30,14 +30,14 @@ body {
   padding: 20px;
   margin: 15px auto;
   border-radius: 8px;
-  width: 300px; /* consistent card size */
+  width: 90%;
   text-align: center;
 }
 
 .card input {
-  width: 90%;
+  width: 30%;
   padding: 8px;
-  margin-bottom: 10px;
+  margin: 5px;
   border: none;
   border-radius: 4px;
 }
@@ -47,6 +47,7 @@ body {
   color: #111;
   border: none;
   padding: 10px 15px;
+  margin: 5px;
   border-radius: 4px;
   cursor: pointer;
 }
@@ -55,15 +56,35 @@ body {
   background: #00cc55;
 }
 
+.card h2 {
+  color: white;
+}
+
 .team-box {
   background: #222;
   padding: 15px;
   border-radius: 8px;
   margin-top: 15px;
-  color: white; /* Capital + Bid text in white */
+  color: white;
 }
 
-.winner-section h2,
-.card h2 {
-  color: white; /* Section titles in white */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+table th, table td {
+  border: 1px solid #00ff66;
+  padding: 8px;
+  text-align: center;
+  color: white;
+}
+
+table th {
+  background: #333;
+}
+
+.winner-section h2 {
+  color: white;
 }
