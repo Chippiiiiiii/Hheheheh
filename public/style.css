@@ -5,7 +5,7 @@ body {
 }
 
 .container {
-  max-width: 1000px;
+  max-width: 800px;
   margin: auto;
   padding: 20px;
 }
@@ -25,16 +25,56 @@ body {
   color: white;
 }
 
-.card {
+/* TEAM PAGE CARDS */
+.team-card {
   background: #222;
   padding: 20px;
   margin: 15px auto;
   border-radius: 8px;
-  width: 90%;
+  width: 300px; /* smaller size for Teams */
   text-align: center;
 }
 
-.card input {
+.team-card h2 {
+  color: white;
+  margin-bottom: 10px;
+}
+
+.team-card input {
+  width: 90%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 4px;
+}
+
+.team-card button {
+  background: #00ff66;
+  color: #111;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.team-card button:hover {
+  background: #00cc55;
+}
+
+/* ADMIN PAGE CARDS */
+.admin-card {
+  background: #222;
+  padding: 20px;
+  margin: 15px auto;
+  border-radius: 8px;
+  width: 90%; /* larger size for Admin */
+}
+
+.admin-card h2 {
+  color: white;
+}
+
+.admin-card input {
   width: 30%;
   padding: 8px;
   margin: 5px;
@@ -42,7 +82,7 @@ body {
   border-radius: 4px;
 }
 
-.card button {
+.admin-card button {
   background: #00ff66;
   color: #111;
   border: none;
@@ -52,22 +92,11 @@ body {
   cursor: pointer;
 }
 
-.card button:hover {
+.admin-card button:hover {
   background: #00cc55;
 }
 
-.card h2 {
-  color: white;
-}
-
-.team-box {
-  background: #222;
-  padding: 15px;
-  border-radius: 8px;
-  margin-top: 15px;
-  color: white;
-}
-
+/* Tables */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -83,8 +112,4 @@ table th, table td {
 
 table th {
   background: #333;
-}
-
-.winner-section h2 {
-  color: white;
 }
