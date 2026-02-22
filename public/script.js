@@ -19,13 +19,13 @@ window.register = async function () {
         savedTeam = name;
         updateLayout();
 
-        // Immediately show capital after registration
+        // Show capital immediately
         const info = document.getElementById("teamInfo");
         if (info) {
             info.innerHTML = `
                 <div class="team-box">
-                    <p>Capital: ₹${data.capital}</p>
-                    <p>Your Current Bid: ₹0</p>
+                    <p>💰 Capital: ₹${data.capital}</p>
+                    <p>💵 Your Current Bid: ₹0</p>
                 </div>`;
         }
     } else if (data.error) {
@@ -94,62 +94,37 @@ function updateLayout() {
 // -------------------- SOCKET.IO LISTENER --------------------
 
 socket.on("update", (data) => {
-    // Timers
+    // Timer
     const teamTimer = document.getElementById("teamTimer");
-    if (teamTimer) teamTimer.innerText = "Time Left: " + data.timeLeft + "s";
+    if (teamTimer) teamTimer.innerText = `◴ Time Left: ${data.timeLeft}s`;
 
-    // Base Price Display
+    // Base Price
     const basePriceDisplay = document.getElementById("basePriceDisplay");
-    if (basePriceDisplay) basePriceDisplay.innerText = "Base Price: ₹" + data.basePrice;
+    if (basePriceDisplay) basePriceDisplay.innerText = `🏷️ Base Price: ₹${data.basePrice}`;
 
-    // Highest Bidder (Admin)
-    const highest = document.getElementById("highestTeam");
-    if (highest) highest.innerText = "Highest Bidder: " + (data.highestTeam || "None");
-
-    // Registered Teams (Admin)
-    const teamListTable = document.getElementById("teamListTable");
-    if (teamListTable) {
-        const tbody = teamListTable.querySelector("tbody");
-        tbody.innerHTML = "";
-        let no = 1;
-        for (let t in data.teams) {
-            tbody.innerHTML += `<tr><td>${no}</td><td>${t}</td></tr>`;
-            no++;
+    // Team Info
+    if (savedTeam && data.teams[savedTeam]) {
+        const info = document.getElementById("teamInfo");
+        if (info) {
+            info.innerHTML = `
+            <div class="team-box">
+                <p>💰 Capital: ₹${data.teams[savedTeam].capital}</p>
+                <p>💵 Your Current Bid: ₹${data.teams[savedTeam].bid}</p>
+            </div>`;
         }
     }
 
-    // Round Results (Admin)
-    const adminHistoryTable = document.getElementById("adminHistoryTable");
-    if (adminHistoryTable) {
-        const tbody = adminHistoryTable.querySelector("tbody");
+    // Winners
+    const winnerTable = document.getElementById("winnerTable");
+    if (winnerTable) {
+        const tbody = winnerTable.querySelector("tbody");
         tbody.innerHTML = "";
-        data.history.forEach((h, i) => {
+        data.history.forEach((item, index) => {
             tbody.innerHTML += `
             <tr>
-                <td>${i + 1}</td>
-                <td>${h.team || "No Winner"}</td>
-                <td>₹${h.bid}</td>
+                <td>${index + 1}</td>
+                <td>${item.team || "No Winner"}</td>
             </tr>`;
-        });
-    }
-
-    // Round Bids (Admin)
-    const roundBidsContainer = document.getElementById("roundBidsContainer");
-    if (roundBidsContainer) {
-        roundBidsContainer.innerHTML = "";
-        data.history.forEach((h) => {
-            let tableHTML = `
-            <h3>Round ${h.round}</h3>
-            <table>
-                <thead>
-                    <tr><th>Team No</th><th>Team Name</th><th>Bid</th></tr>
-                </thead>
-                <tbody>`;
-            h.allBids.forEach(b => {
-                tableHTML += `<tr><td>${b.teamNo}</td><td>${b.team}</td><td>₹${b.bid}</td></tr>`;
-            });
-            tableHTML += "</tbody></table>";
-            roundBidsContainer.innerHTML += tableHTML;
         });
     }
 
@@ -175,32 +150,6 @@ socket.on("update", (data) => {
         } else {
             leaderboardContainer.style.display = "none";
         }
-    }
-
-    // Team Info (Teams Page)
-    if (savedTeam && data.teams[savedTeam]) {
-        const info = document.getElementById("teamInfo");
-        if (info) {
-            info.innerHTML = `
-            <div class="team-box">
-                <p>Capital: ₹${data.teams[savedTeam].capital}</p>
-                <p>Your Current Bid: ₹${data.teams[savedTeam].bid}</p>
-            </div>`;
-        }
-    }
-
-    // Team Winner Table (Teams Page)
-    const winnerTable = document.getElementById("winnerTable");
-    if (winnerTable) {
-        const tbody = winnerTable.querySelector("tbody");
-        tbody.innerHTML = "";
-        data.history.forEach((item, index) => {
-            tbody.innerHTML += `
-            <tr>
-                <td>${index + 1}</td>
-                <td>${item.team || "No Winner"}</td>
-            </tr>`;
-        });
     }
 
     updateLayout();
