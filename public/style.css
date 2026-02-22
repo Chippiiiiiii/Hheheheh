@@ -13,7 +13,7 @@ body {
 
 .main-title {
   text-align: center;
-  color: #ffffff;        /* crisp white headings */
+  color: white;        /* crisp white headings */
 }
 
 /* Status bar (Teams Page) */
@@ -25,13 +25,13 @@ body {
 }
 
 .status-bar h3 {
-  color: #00ff88;        /* softer neon green */
+  color: white;        /* softer neon green */
   font-size: 16px;
 }
 
 /* Team name display */
 .team-name-wrapper h3 {
-  color: #ffffff;
+  color: white;
   font-size: 16px;
   font-weight: normal;
 }
@@ -44,7 +44,6 @@ body {
   border-radius: 8px;
   width: 400px;
   text-align: center;
-  border: 1px solid #00ff88; /* subtle green border */
 }
 
 /* Larger width for tables */
@@ -54,7 +53,7 @@ body {
 }
 
 .team-card h2 {
-  color: #ffffff;
+  color: #white;
   margin-bottom: 15px;
   font-size: 18px;
 }
@@ -86,12 +85,11 @@ body {
 
 /* ADMIN PAGE CARDS */
 .admin-card {
-  background: #1a1a1a;
+  background: #222;
   padding: 20px;
   margin: 15px auto;
   border-radius: 8px;
   width: 90%;
-  border: 1px solid #00ff88;
 }
 
 .admin-card.settings-card {
@@ -103,6 +101,12 @@ body {
   color: #ffffff;
   margin-bottom: 10px;
 }
+.settings-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 18px;
+}
 
 /* Inputs stacked vertically */
 .settings-inputs input {
@@ -113,6 +117,13 @@ body {
   background: #2a2a2a;
   color: #ffffff;
   font-size: 14px;
+}
+/* Buttons in one line */
+.settings-buttons {
+  display: flex;
+  justify-content: flex-start;
+  gap: 8px;
+  margin-top: 15px;
 }
 
 /* Buttons in one line */
@@ -152,3 +163,4 @@ table th {
 table td {
   color: #e0e0e0; /* light grey text for readability */
 }
+
